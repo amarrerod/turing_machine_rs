@@ -2,7 +2,7 @@
 use state::State;
 use moves::Moves;
 
-struct Tuple {
+pub struct Tuple {
     state: State,
     read_symb: char,
     write_symb: char,

@@ -1,2 +1,2 @@
 
-enum Moves { Left, Right, Stay}
+pub num Moves { Left, Right, Stay}
