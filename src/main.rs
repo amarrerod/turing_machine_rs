@@ -1,22 +1,14 @@
-
-mod state;
-use state::State;
-
+use std::env;
 mod machine;
-
 mod tuple;
+mod state;
 
 fn main() {
-    let states: Vec<State> = (0..10).map(|i| State::new(i)).collect();
-    let final_states: Vec<State> = (0..10)
-        .filter(|x| x % 2 == 0)
-        .map(|x| State::new(x))
-        .collect();
-    println!("The states are: {:?}", states);
-    println!("The final states are: {:?}", final_states);
-    let alph: Vec<char> = "abcdef".chars().collect();
-    let tm: machine::TuringMachine =
-        machine::TuringMachine::new(states, State::new(0), final_states, alph, '$');
+    let args: Vec<String> = env::args().collect();
+    if args.iter().count() != 2{
+        panic!("No Turing Machine file (.tm) was given");
+    }
+    let tm: machine::TuringMachine = machine::load_from_instance(args[1].to_string())
+    .expect("Error loading TM");
     println!("The Turing Machine is: {:#?}", tm);
-    machine::load_from_instance("/Users/amarrero/Proyectos/turing_machine_rs/machines/example1.tm");
 }

@@ -1,8 +1,7 @@
-
-
 use crate::state::State;
-use crate::tuple::Tuple;
 use crate::tuple::Moves;
+use crate::tuple::Tuple;
+use itertools::Itertools;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -42,9 +41,8 @@ fn create_states(n_states: u32) -> Vec<State> {
     (0..n_states).map(|i| State::new(i as u32)).collect()
 }
 
-fn create_tuple(definition: &str) -> Tuple{
-    let tokens : Vec<&str>= definition.split_whitespace().collect();
-    println!("The tokens are: {:?}", tokens);
+fn create_tuple(definition: &str) -> Tuple {
+    let tokens: Vec<&str> = definition.split_whitespace().collect();
     Tuple {
         state: State::new(tokens[0].parse::<u32>().unwrap()),
         read_symb: tokens[1].chars().next().expect("Read symbol is empty"),
@@ -53,31 +51,45 @@ fn create_tuple(definition: &str) -> Tuple{
             "S" => Moves::S,
             "R" => Moves::R,
             "L" => Moves::L,
-            _ => panic!("Move not recognized!")
+            _ => panic!("Move not recognized!"),
         },
-        next_state: State::new(tokens[4].parse::<u32>().unwrap())
+        next_state: State::new(tokens[4].parse::<u32>().unwrap()),
     }
 }
 
-pub fn load_from_instance(filename: &str) -> Result<u32, io::Error> {
+pub fn load_from_instance(filename: String) -> Result<TuringMachine, io::Error> {
     let tm: TuringMachine;
     let file = File::open(filename)?;
     let file_reader = BufReader::new(file);
     let data: Vec<String> = file_reader.lines().filter_map(io::Result::ok).collect();
 
     let mut states: Vec<State> = vec![];
-    let mut initial_state: State;
+    let mut initial_state: State = State::new(0);
     let mut final_states: Vec<State> = vec![];
     let mut tuples: Vec<Tuple> = vec![];
+    let mut white_space: char = '$';
+    let mut alpha: Vec<char> = vec![];
+
     for (index, line) in data.iter().enumerate() {
         match index {
             0 => states = create_states(line.parse::<u32>().unwrap()),
             1 => initial_state = State::new(line.parse::<u32>().unwrap()),
             2 => final_states = create_states(line.parse::<u32>().unwrap()),
-            3 => continue,
-            _ => tuples.push(create_tuple(line)) 
+            3 => white_space = line.chars().next().expect("No white space given"),
+            _ => {
+                let tuple: Tuple = create_tuple(line);
+                alpha.push(tuple.read_symb);
+                alpha.push(tuple.write_symb);
+                tuples.push(tuple);
+            }
         }
     }
-    println!("The tuples are: {:#?}", tuples);
-    Ok(0)
+    let alpha: Vec<char> = alpha
+        .into_iter()
+        .unique()
+        .collect();
+
+    let tm: TuringMachine =
+        TuringMachine::new(states, initial_state, final_states, alpha, white_space);
+    Ok(tm)
 }
