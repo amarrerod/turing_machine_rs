@@ -1,4 +1,3 @@
-
 /**
  * Struct which represents a states in the TM
  */
