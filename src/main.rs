@@ -1,7 +1,10 @@
+
 mod state;
 use state::State;
 
 mod machine;
+
+mod tuple;
 
 fn main() {
     let states: Vec<State> = (0..10).map(|i| State::new(i)).collect();
@@ -15,4 +18,5 @@ fn main() {
     let tm: machine::TuringMachine =
         machine::TuringMachine::new(states, State::new(0), final_states, alph, '$');
     println!("The Turing Machine is: {:#?}", tm);
+    machine::load_from_instance("/Users/amarrero/Proyectos/turing_machine_rs/machines/example1.tm");
 }
