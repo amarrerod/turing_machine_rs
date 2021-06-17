@@ -1,6 +1,8 @@
 use crate::state::State;
 use crate::tuple::Moves;
 use crate::tuple::Tuple;
+use crate::tape::Tape;
+use crate::tape::load_from_file;
 use itertools::Itertools;
 use std::fs::File;
 use std::io;
@@ -14,6 +16,7 @@ pub struct TuringMachine {
     final_states: Vec<State>,
     input_alph: Vec<char>,
     empty_space: char,
+    tape: Tape,
 }
 
 impl TuringMachine {
@@ -23,6 +26,7 @@ impl TuringMachine {
         final_states: Vec<State>,
         input_alph: Vec<char>,
         empty_space: char,
+        tape: Tape,
     ) -> TuringMachine {
         TuringMachine {
             states,
@@ -30,6 +34,7 @@ impl TuringMachine {
             final_states,
             input_alph,
             empty_space,
+            tape
         }
     }
 }
@@ -57,9 +62,9 @@ fn create_tuple(definition: &str) -> Tuple {
     }
 }
 
-pub fn load_from_instance(filename: String) -> Result<TuringMachine, io::Error> {
+pub fn load_from_instance(tm_filename: String, tape_filename: String) -> Result<TuringMachine, io::Error> {
     let tm: TuringMachine;
-    let file = File::open(filename)?;
+    let file = File::open(tm_filename)?;
     let file_reader = BufReader::new(file);
     let data: Vec<String> = file_reader.lines().filter_map(io::Result::ok).collect();
 
@@ -85,8 +90,9 @@ pub fn load_from_instance(filename: String) -> Result<TuringMachine, io::Error> 
         }
     }
     let alpha: Vec<char> = alpha.into_iter().unique().collect();
-
+    let tape : Tape = load_from_file(tape_filename).unwrap();
     let tm: TuringMachine =
-        TuringMachine::new(states, initial_state, final_states, alpha, white_space);
+        TuringMachine::new(states, initial_state, final_states, alpha, white_space, tape);
     Ok(tm)
 }
+

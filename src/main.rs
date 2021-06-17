@@ -10,8 +10,7 @@ fn main() {
         panic!("No Turing Machine file (.tm) or Tape file (.tape) was given");
     }
     let tm: machine::TuringMachine =
-        machine::load_from_instance(args[1].to_string()).expect("Error loading TM");
-    tape::load_from_file(args[2].to_string());
+        machine::load_from_instance(args[1].to_string(), args[2].to_string()).expect("Error loading TM");
 
     println!("The Turing Machine is: {:#?}", tm);
 }
