@@ -9,8 +9,7 @@ fn main() {
     if args.iter().count() != 3 {
         panic!("No Turing Machine file (.tm) or Tape file (.tape) was given");
     }
-    let tm: machine::TuringMachine =
-        machine::load_from_instance(args[1].to_string(), args[2].to_string()).expect("Error loading TM");
-
-    println!("The Turing Machine is: {:#?}", tm);
+    let mut tm: machine::TuringMachine =
+        machine::load_from_instance(args[1].to_string(), args[2].to_string())
+            .expect("Error loading TM");
 }
