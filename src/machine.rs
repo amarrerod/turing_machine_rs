@@ -84,10 +84,7 @@ pub fn load_from_instance(filename: String) -> Result<TuringMachine, io::Error> 
             }
         }
     }
-    let alpha: Vec<char> = alpha
-        .into_iter()
-        .unique()
-        .collect();
+    let alpha: Vec<char> = alpha.into_iter().unique().collect();
 
     let tm: TuringMachine =
         TuringMachine::new(states, initial_state, final_states, alpha, white_space);
