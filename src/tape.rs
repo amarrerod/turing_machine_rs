@@ -3,7 +3,7 @@ use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Tape {
     content: Vec<char>,
     pos: u32,
