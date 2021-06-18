@@ -23,6 +23,22 @@ impl Tape {
         self.pos
     }
 
+    pub fn move_right(&mut self) {
+        if self.pos as usize == self.content.len() -1 {
+            self.content.push(self.white_char);
+        }
+        self.pos += 1;
+    }
+
+    pub fn move_left(&mut self) {
+        if self.pos == 0 {
+            let mut new_content: Vec<char> = vec![self.white_char; 1];
+            new_content.append(&mut self.content);
+            self.content = new_content;
+        }
+        self.pos -= 1;
+    }
+
     pub fn update_pos(&mut self, new_pos: i32) {
         if new_pos as usize >= self.content.len() {
             self.content.push(self.white_char);
@@ -46,6 +62,14 @@ impl Tape {
 
     pub fn set_white_char(&mut self, white: char) {
         self.white_char = white;
+    }
+
+    pub fn get_white_char(&self) -> char {
+        self.white_char
+    }
+
+    pub fn get_content(&self) -> Vec<char> {
+        self.content.clone()
     }
 }
 
