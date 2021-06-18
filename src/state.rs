@@ -1,7 +1,7 @@
 /**
  * Struct which represents a states in the TM
  */
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct State {
     id: u32,
 }

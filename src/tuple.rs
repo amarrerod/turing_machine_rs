@@ -1,13 +1,13 @@
 use crate::state::State;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Moves {
     L,
     R,
     S,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Tuple {
     pub state: State,
     pub read_symb: char,
