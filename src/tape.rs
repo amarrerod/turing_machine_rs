@@ -1,3 +1,4 @@
+use crate::tuple::Moves;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -23,14 +24,22 @@ impl Tape {
         self.pos
     }
 
-    pub fn move_right(&mut self) {
-        if self.pos as usize == self.content.len() -1 {
+    pub fn move_head(&mut self, dir: Moves) {
+        match dir {
+            Moves::L => self.move_left(),
+            Moves::R => self.move_right(),
+            Moves::S => {}
+        }
+    }
+
+    fn move_right(&mut self) {
+        if self.pos as usize == self.content.len() - 1 {
             self.content.push(self.white_char);
         }
         self.pos += 1;
     }
 
-    pub fn move_left(&mut self) {
+    fn move_left(&mut self) {
         if self.pos == 0 {
             let mut new_content: Vec<char> = vec![self.white_char; 1];
             new_content.append(&mut self.content);

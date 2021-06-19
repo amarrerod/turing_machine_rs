@@ -1,13 +1,11 @@
-
-use crate::tuple::Tuple as Tuple;
-use crate::state::State as State;
-use crate::tuple::Moves;
-use crate::tape::Tape as Tape;
+use crate::state::State;
 use crate::tape::load_from_file;
+use crate::tape::Tape;
+use crate::tuple::Moves;
+use crate::tuple::Tuple;
 use std::io;
 
 #[cfg(test)]
-
 #[test]
 fn tuple_creation() {
     let tuple: Tuple = Tuple::new(State::new(0), 'A', 'B', Moves::S, State::new(1));
@@ -22,29 +20,27 @@ fn tuple_creation() {
 fn state_creation() {
     for i in 0..100 {
         let state: State = State::new(i);
-            assert_eq!(state.id(), i);
-            assert_ne!(state, State::new(i + 1));
+        assert_eq!(state.id(), i);
+        assert_ne!(state, State::new(i + 1));
     }
 }
 
-
 #[test]
 fn tape_load_from_file() {
-    let filename : String = String::from("notfound.tape");
+    let filename: String = String::from("notfound.tape");
     assert_eq!(load_from_file(filename).is_err(), true);
-    let filename : String = String::from("tapes/example1.tape");
+    let filename: String = String::from("tapes/example1.tape");
     assert_eq!(load_from_file(filename).is_err(), false);
-    let sample_tape: Tape = Tape::new(
-        "aaaabbbb".chars().collect(),
-        '$'
-    );
-    let tape: Tape = load_from_file(String::from("tapes/example1.tape")).expect("Error creating Tape");
+    let sample_tape: Tape = Tape::new("aaaabbbb".chars().collect(), '$');
+    let tape: Tape =
+        load_from_file(String::from("tapes/example1.tape")).expect("Error creating Tape");
     assert_eq!(sample_tape, tape);
 }
 
 #[test]
 fn tape_methods() {
-    let mut tape: Tape = load_from_file(String::from("tapes/example1.tape")).expect("Error creating Tape");
+    let mut tape: Tape =
+        load_from_file(String::from("tapes/example1.tape")).expect("Error creating Tape");
     assert_eq!(0, tape.get_pos());
     let new_char: char = '%';
     tape.set_white_char(new_char);

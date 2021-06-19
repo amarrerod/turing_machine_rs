@@ -15,8 +15,10 @@ pub struct TuringMachine {
     inital_state: State,
     final_states: Vec<State>,
     input_alph: Vec<char>,
+    tuples: Vec<Tuple>,
     empty_space: char,
     tape: Tape,
+    current_state: State,
 }
 
 impl TuringMachine {
@@ -25,18 +27,45 @@ impl TuringMachine {
         inital_state: State,
         final_states: Vec<State>,
         input_alph: Vec<char>,
+        tuples: Vec<Tuple>,
         empty_space: char,
         tape: Tape,
     ) -> TuringMachine {
+        let current_state: State = State::new(inital_state.id());
         TuringMachine {
             states,
             inital_state,
             final_states,
             input_alph,
+            tuples,
             empty_space,
             tape,
+            current_state,
         }
     }
+
+    pub fn run(&mut self) -> Result<&Tape, io::Error> {
+        loop {
+            let current_char: char = self.tape.get_char_at_pos();
+            let tuple: Option<&Tuple> = self
+                .tuples
+                .iter()
+                .filter(|t| (t.read_symb == current_char) && (t.state == self.current_state))
+                .next();
+            if tuple == None {
+                break;
+            }
+            let tuple: Tuple = tuple.unwrap().clone();
+            self.tape.set_char_at_pos(tuple.write_symb);
+            self.tape.move_head(tuple._move);
+            self.current_state = tuple.next_state;
+        }
+        if self.final_states.contains(&self.current_state){
+            println!("OK");
+        }
+        Ok(&self.tape)
+}
+
 }
 
 /**
@@ -44,6 +73,13 @@ impl TuringMachine {
  */
 fn create_states(n_states: u32) -> Vec<State> {
     (0..n_states).map(|i| State::new(i as u32)).collect()
+}
+
+fn create_final_states(ids: Vec<&str>) -> Vec<State> {
+    return ids
+        .into_iter()
+        .map(|i| State::new(i.parse::<u32>().unwrap()))
+        .collect();
 }
 
 fn create_tuple(definition: &str) -> Tuple {
@@ -82,7 +118,7 @@ pub fn load_from_instance(
         match index {
             0 => states = create_states(line.parse::<u32>().unwrap()),
             1 => initial_state = State::new(line.parse::<u32>().unwrap()),
-            2 => final_states = create_states(line.parse::<u32>().unwrap()),
+            2 => final_states = create_final_states(line.split(',').collect()),
             3 => white_space = line.chars().next().expect("No white space given"),
             _ => {
                 let tuple: Tuple = create_tuple(line);
@@ -100,6 +136,7 @@ pub fn load_from_instance(
         initial_state,
         final_states,
         alpha,
+        tuples,
         white_space,
         tape,
     );
