@@ -52,10 +52,10 @@ fn tape_methods() {
     assert_eq!('a', tape.get_char_at_pos());
     tape.set_char_at_pos(new_char);
     assert_eq!(new_char, tape.get_char_at_pos());
-    let mut new_content = tape.get_content();
-    let new_tape_length : usize = new_content.len() + 1;
-    new_content.push(tape.get_white_char());
-    tape.update_pos(new_tape_length as i32);
-    assert_eq!(new_tape_length, tape.get_content().len());
-    assert_eq!(new_content, tape.get_content());
+    // Nos movemos a la derecha
+    tape.move_right();
+    assert_eq!(tape.get_char_at_pos(), 'a');
+    // Nos movemos a la izquierda
+    tape.move_left();
+    assert_eq!(tape.get_char_at_pos(), '%');
 }

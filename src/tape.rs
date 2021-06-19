@@ -39,19 +39,6 @@ impl Tape {
         self.pos -= 1;
     }
 
-    pub fn update_pos(&mut self, new_pos: i32) {
-        if new_pos as usize >= self.content.len() {
-            self.content.push(self.white_char);
-        } else if new_pos <= 0 {
-            let mut new_content: Vec<char> = vec![self.white_char; 1];
-            new_content.append(&mut self.content);
-            self.content = new_content;
-            self.pos = 0;
-        } else {
-            self.pos = new_pos as u32;
-        }
-    }
-
     pub fn set_char_at_pos(&mut self, new_char: char) {
         self.content[self.pos as usize] = new_char;
     }
