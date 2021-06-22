@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::io::{Error, ErrorKind};
 
 #[derive(Debug)]
 pub struct TuringMachine {
@@ -44,7 +45,7 @@ impl TuringMachine {
         }
     }
 
-    pub fn run(&mut self) -> Result<&Tape, io::Error> {
+    pub fn run(&mut self) -> Result<&Tape, Error> {
         loop {
             let current_char: char = self.tape.get_char_at_pos();
             let tuple: Option<&Tuple> = self
@@ -60,12 +61,11 @@ impl TuringMachine {
             self.tape.move_head(tuple._move);
             self.current_state = tuple.next_state;
         }
-        if self.final_states.contains(&self.current_state){
-            println!("OK");
+        if !self.final_states.contains(&self.current_state) {
+            Error::new(ErrorKind::Other, "Finished in a non-final state");
         }
         Ok(&self.tape)
-}
-
+    }
 }
 
 /**
@@ -102,7 +102,6 @@ pub fn load_from_instance(
     tm_filename: String,
     tape_filename: String,
 ) -> Result<TuringMachine, io::Error> {
-    let tm: TuringMachine;
     let file = File::open(tm_filename)?;
     let file_reader = BufReader::new(file);
     let data: Vec<String> = file_reader.lines().filter_map(io::Result::ok).collect();
