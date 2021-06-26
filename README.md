@@ -7,6 +7,8 @@
 
 Example of Turing's Machine in Rust Programming Language.
 
+![tm](https://i.imgur.com/16wAdxY.gif)
+
 
 ## Run Locally
 
