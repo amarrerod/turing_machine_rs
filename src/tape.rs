@@ -77,3 +77,38 @@ pub fn load_from_file(filename: String) -> Result<Tape, io::Error> {
     let tape: Tape = Tape::new(data.chars().collect(), default_white);
     Ok(tape)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn tape_load_from_file() {
+        let filename: String = String::from("notfound.tape");
+        assert_eq!(load_from_file(filename).is_err(), true);
+        let filename: String = String::from("tapes/example1.tape");
+        assert_eq!(load_from_file(filename).is_err(), false);
+        let sample_tape: Tape = Tape::new("aaaabbbb".chars().collect(), '$');
+        let tape: Tape =
+            load_from_file(String::from("tapes/example1.tape")).expect("Error creating Tape");
+        assert_eq!(sample_tape, tape);
+    }
+
+    #[test]
+    fn tape_methods() {
+        let mut tape: Tape =
+            load_from_file(String::from("tapes/example1.tape")).expect("Error creating Tape");
+        assert_eq!(0, tape.get_pos());
+        let new_char: char = '%';
+        tape.set_white_char(new_char);
+        assert_eq!(new_char, tape.get_white_char());
+        assert_eq!('a', tape.get_char_at_pos());
+        tape.set_char_at_pos(new_char);
+        assert_eq!(new_char, tape.get_char_at_pos());
+        // Nos movemos a la derecha
+        tape.move_right();
+        assert_eq!(tape.get_char_at_pos(), 'a');
+        // Nos movemos a la izquierda
+        tape.move_left();
+        assert_eq!(tape.get_char_at_pos(), '%');
+    }
+}

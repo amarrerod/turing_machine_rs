@@ -4,8 +4,6 @@ mod state;
 mod tape;
 mod tuple;
 
-mod test;
-
 use tape::Tape;
 
 fn main() {

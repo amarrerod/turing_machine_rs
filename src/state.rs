@@ -15,3 +15,16 @@ impl State {
         self.id
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn state_creation() {
+        for i in 0..100 {
+            let state: State = State::new(i);
+            assert_eq!(state.id(), i);
+            assert_ne!(state, State::new(i + 1));
+        }
+    }
+}
